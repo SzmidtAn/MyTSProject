@@ -6,9 +6,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import {StackScreens} from "./src/helpers/typeHelpers";
 import { NavigationContainer } from "@react-navigation/native";
 import RegisterScreen from "./src/screnns/registerScreen";
-import {NewProductScreen} from "./src/screnns/NewProductScreen";
 import {HomeScreen} from "./src/screnns/homeScreen";
 import {LoginScreen} from "./src/screnns/loginScreen";
+import {NewProductScreen} from "./src/screnns/newProductScreen";
 
 export const MainNavigator = () => {
     const StackNavigator = createNativeStackNavigator<StackScreens>();

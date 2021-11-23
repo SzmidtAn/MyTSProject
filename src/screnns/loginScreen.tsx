@@ -14,21 +14,19 @@ export const LoginForm = (props) => {
 
     async function onPressFunction() {
         console.log(username, password)
-
         if (props.regForm) {
             await authContext?.register('Anna', 'Svensson', username, password);
             return
         }
-
         authContext?.login(username, password);
     }
 
     return (
         <View style={styles.loginForm}>
         <Text style={styles.textLabel} >Email ID</Text>
-    <TextInput placeholder={'email@gmail.com'} onChange={(e) => setUsername(e.target.value)} onFocus={() =>setColorOnFocus("email")} onBlur={() =>setColorOnFocus("")} style={[styles.inputLogin, {borderColor: colorOnFocus === "email" ? '#da1961' : '#686868'}]} />
+    <TextInput placeholder={'email@gmail.com'} onChangeText={setUsername} onFocus={() =>setColorOnFocus("email")} onBlur={() =>setColorOnFocus("")} style={[styles.inputLogin, {borderColor: colorOnFocus === "email" ? '#da1961' : '#686868'}]} />
     <Text style={styles.textLabel} >Password</Text>
-        <TextInput placeholder={'******'}  onChange={(e) => setPassword(e.target.value)}  secureTextEntry onFocus={() =>setColorOnFocus("password")} onBlur={() =>setColorOnFocus("")} style={[styles.inputLogin, {borderColor: colorOnFocus === "password" ? '#da1961' : '#686868'}]} />
+        <TextInput placeholder={'******'}  onChangeText={setPassword}  secureTextEntry onFocus={() =>setColorOnFocus("password")} onBlur={() =>setColorOnFocus("")} style={[styles.inputLogin, {borderColor: colorOnFocus === "password" ? '#da1961' : '#686868'}]} />
     <View style={styles.viewLoginButton}>
     <Pressable style={styles.buttonLoginForm} onPress={onPressFunction}>
     <LinearGradient   start={{x: 0, y: 0}} end={{x: 1, y: 1}} colors={colors} style={styles.buttonLoginForm}>
@@ -151,12 +149,28 @@ export const styles = StyleSheet.create({
         viewHomePage: {
             height: '100%',
             backgroundColor: 'white'
-
     },
         flexRow: {
             display: 'flex',
             flexDirection: 'row',
-    }
+            alignItems: 'center',
+            justifyContent: 'center',
+    },
+    viewNewProductPage: {
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        width: '100%',
+        justifyContent: 'space-between',
+        backgroundColor: 'white'
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        zIndex: 100
+    },
 
 
     },

@@ -7,18 +7,14 @@ import {NativeStackScreenProps} from "@react-navigation/native-stack";
 import {StackScreens} from "../helpers/typeHelpers";
 import firebase from "../services/firebaseService";
 import SwipeableFlatList from 'react-native-swipeable-list';
+import { FAB } from 'react-native-paper';
 
-function RenderRow(props) {
-    return (
-        <TouchableOpacity onPress={(e) => props.addNewProduct(props.item)}>
-        <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', border: '1px solid black', borderRadius: 8, margin: 6, padding: 8, backgroundColor: '#f1f1f1'}}>
-            <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.name}</Text></View>
-            <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.price}</Text></View>
-            <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.type}</Text></View>
-        </View>
-        </TouchableOpacity>
-    );
-}
+const columns = {
+    name:'Name',
+    price: 'Price',
+    type: 'Type'
+};
+
 
 export const HomeScreen: React.FC<
     NativeStackScreenProps<StackScreens, "HomeScreen">
@@ -44,7 +40,6 @@ export const HomeScreen: React.FC<
     }), [])
 
     const deleteItem = itemId => {
-        // ! Please don't do something like this in production. Use proper state management.
         const newState = [...data];
         const filteredState = newState.filter(item => item.id !== itemId);
         setData(filteredState);
@@ -58,9 +53,27 @@ export const HomeScreen: React.FC<
 
     }
 
-    return ( !data ? null :
-        <View style={styles.viewHomePage}>
+    function RenderRow(props) {
+        console.log(props)
+        return (
+            <TouchableOpacity onPress={(e) => props.addNewProduct(props.item)}>
+                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', border: '1px solid black', borderRadius: 8, margin: 6, padding: 8, backgroundColor: '#f1f1f1'}}>
+                    <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.name}</Text></View>
+                    <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.price}</Text></View>
+                    <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.type}</Text></View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
 
+    return ( !data && columns ? null :
+        <SafeAreaView style={styles.viewHomePage}>
+
+            <View style={{ flex: 1, alignSelf: 'stretch', maxHeight: 34, flexDirection: 'row', border: '1px solid black', borderRadius: 8, margin: 6, padding: 8, backgroundColor: colors[1]}}>
+                <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>Name</Text></View>
+                <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>Price</Text></View>
+                <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>Type</Text></View>
+            </View>
 
             <SwipeableFlatList
                 data={data}
@@ -76,19 +89,19 @@ export const HomeScreen: React.FC<
                 style={{width: '100%', height: 200}}
                 source={{uri: 'https://media3.giphy.com/media/wWue0rCDOphOE/giphy.gif'}} />
 
-            <Pressable style={styles.buttonLoginForm} onPress={addNewProduct}>
-                <LinearGradient   start={{x: 0, y: 0}} end={{x: 1, y: 1}} colors={colors} style={styles.buttonLoginForm}>
-                    <Text style={styles.textButton}>+</Text>
-                </LinearGradient>
-            </Pressable>
-
+            <FAB
+                style={styles.fab}
+                small
+                icon="plus"
+                onPress={() => addNewProduct()}
+            />
 
             <Pressable style={styles.buttonLoginForm} onPress={onPressFunction}>
                 <LinearGradient   start={{x: 0, y: 0}} end={{x: 1, y: 1}} colors={colors} style={styles.buttonLoginForm}>
                     <Text style={styles.textButton}>Logout</Text>
                 </LinearGradient>
             </Pressable>
-        </View>
+        </SafeAreaView>
 );
 }
 
