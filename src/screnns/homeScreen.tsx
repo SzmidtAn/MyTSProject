@@ -8,12 +8,37 @@ import {StackScreens} from "../helpers/typeHelpers";
 import firebase from "../services/firebaseService";
 import SwipeableFlatList from 'react-native-swipeable-list';
 import { FAB } from 'react-native-paper';
+import {TransText} from 'react-native-translation'
 
 const columns = {
     name:'Name',
     price: 'Price',
     type: 'Type'
 };
+
+const message =  {
+    name : {
+    "en-SE" : "Name",
+    "sv-SE" : "Namn",
+    },
+    price : {
+    "en-SE" : "Price",
+    "sv-SE" : "Pris",
+    },
+    type : {
+    "en-SE" : "Type",
+    "sv-SE" : "Typ",
+    },
+    logout : {
+    "en-SE" : "Logout",
+    "sv-SE" : "Loga ut",
+    },
+    delete : {
+    "en-SE" : "Delete",
+    "sv-SE" : "Radera",
+    },
+
+}
 
 
 export const HomeScreen: React.FC<
@@ -70,9 +95,15 @@ export const HomeScreen: React.FC<
         <SafeAreaView style={styles.viewHomePage}>
 
             <View style={{ flex: 1, alignSelf: 'stretch', maxHeight: 34, flexDirection: 'row', border: '1px solid black', borderRadius: 8, margin: 6, padding: 8, backgroundColor: colors[1]}}>
-                <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>Name</Text></View>
-                <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>Price</Text></View>
-                <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>Type</Text></View>
+                <View style={{ flex: 1, alignSelf: 'stretch', }} >
+                    <TransText dictionary = {message.name}/>
+                </View>
+                <View style={{ flex: 1, alignSelf: 'stretch', }} >
+                    <TransText dictionary = {message.price}/>
+                </View>
+                <View style={{ flex: 1, alignSelf: 'stretch', }} >
+                    <TransText dictionary = {message.type}/>
+                </View>
             </View>
 
             <SwipeableFlatList
@@ -98,7 +129,7 @@ export const HomeScreen: React.FC<
 
             <Pressable style={styles.buttonLoginForm} onPress={onPressFunction}>
                 <LinearGradient   start={{x: 0, y: 0}} end={{x: 1, y: 1}} colors={colors} style={styles.buttonLoginForm}>
-                    <Text style={styles.textButton}>Logout</Text>
+                    <TransText style={styles.textButton} dictionary = {message.logout}/>
                 </LinearGradient>
             </Pressable>
         </SafeAreaView>
@@ -110,7 +141,7 @@ const QuickActions = (index, qaItem, deleteItem) => {
         <View style={styles2.qaContainer}>
             <View style={[styles2.button, styles2.button3]}>
                 <Pressable onPress={() => deleteItem(qaItem.id)}>
-                    <Text style={[styles2.buttonText, styles2.button3Text]}>Delete</Text>
+                    <TransText style={[styles2.buttonText, styles2.button3Text]} dictionary = {message.delete}/>
                 </Pressable>
             </View>
         </View>

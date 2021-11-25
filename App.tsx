@@ -9,6 +9,9 @@ import RegisterScreen from "./src/screnns/registerScreen";
 import {HomeScreen} from "./src/screnns/homeScreen";
 import {LoginScreen} from "./src/screnns/loginScreen";
 import {NewProductScreen} from "./src/screnns/newProductScreen";
+import {LanguageProvider} from "react-native-translation";
+const locale = Localization.locale
+import * as Localization from 'expo-localization';
 
 export const MainNavigator = () => {
     const StackNavigator = createNativeStackNavigator<StackScreens>();
@@ -37,10 +40,13 @@ export const MainNavigator = () => {
 };
 
 export default function App() {
+    console.log(locale)
   return (
+      <LanguageProvider language={locale}>
       <AuthContextProvider>
         <MainNavigator  />
       </AuthContextProvider>
+      </LanguageProvider>
   );
 }
 
