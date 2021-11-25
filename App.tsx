@@ -21,7 +21,7 @@ export const MainNavigator = () => {
             <StackNavigator.Navigator>
                 {!authContext?.isUserSignedIn && (
                     <>
-                        <StackNavigator.Screen name="LoginScreen" component={LoginScreen} />
+                        <StackNavigator.Screen options={{headerShown: false}} name="LoginScreen" component={LoginScreen} />
                         <StackNavigator.Screen
                             name="RegisterScreen"
                             component={RegisterScreen}
@@ -30,8 +30,8 @@ export const MainNavigator = () => {
                 )}
                 {authContext?.isUserSignedIn && (
                     <>
-                    <StackNavigator.Screen name="HomeScreen" component={HomeScreen} />
-                    <StackNavigator.Screen name="NewProductScreen" component={NewProductScreen} />
+                    <StackNavigator.Screen options={{headerShown: false}} name="HomeScreen" component={HomeScreen} />
+                    <StackNavigator.Screen options={{title: 'Products details'}} name="NewProductScreen" component={NewProductScreen} />
                     </>
                 )}
             </StackNavigator.Navigator>

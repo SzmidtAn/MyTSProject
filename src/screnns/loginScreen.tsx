@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {StackScreens} from "../helpers/typeHelpers";
 import {AuthContext} from "../context/AuthContext";
 
-export const LoginForm = (props) => {
+export const LoginForm = (props: { regForm: boolean; }) => {
     const [colorOnFocus, setColorOnFocus] = useState("")
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -56,7 +56,7 @@ export const LoginScreen: React.FC<
         <Text style={styles.textWelcome}>Welcome,</Text>
         <Text style={styles.textSecond}>Sign in to continue!</Text>
     </SafeAreaView>
-            <LoginForm navigation={props.navigation} />
+            <LoginForm regForm={false}  />
             <Pressable style={styles.buttonLoginForm} onPress={() => onPressFunction({screen : 'RegisterScreen'})}>
             <Text style={styles.newUser}>I'm a new user. SIGN UP</Text>
             </Pressable>

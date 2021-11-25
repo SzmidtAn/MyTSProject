@@ -3,4 +3,5 @@ export type StackScreens = {
     LoginForm: undefined;
     RegisterScreen: undefined;
     HomeScreen: undefined;
+    NewProductScreen: undefined;
 };

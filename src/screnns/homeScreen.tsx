@@ -41,10 +41,17 @@ const message =  {
 }
 
 
+interface data {
+    name: string,
+    type: string,
+    price: number,
+    id: number | string
+}
+
 export const HomeScreen: React.FC<
     NativeStackScreenProps<StackScreens, "HomeScreen">
-    > = (props) => {
-    const [data, setData] = useState([])
+    > = (props: React.PropsWithChildren<any>) => {
+    const [data, setData] = useState<data | any>();
     const authContext = useContext(AuthContext);
     const dbRef = firebase.firestore().collection('products')
 
@@ -55,34 +62,35 @@ export const HomeScreen: React.FC<
 
     useEffect((() => {
         dbRef.onSnapshot((snapshot) => {
-                const postData = [];
+                let postData: any = [];
                 snapshot.forEach((doc) => postData.push({ ...doc.data(), id: doc.id }));
                 console.log(postData);
+                console.log('postData');
                 setData(postData)
             });
 
 
     }), [])
 
-    const deleteItem = itemId => {
+    const deleteItem = (itemId: string | any  ) => {
         const newState = [...data];
-        const filteredState = newState.filter(item => item.id !== itemId);
+        const filteredState = newState?.filter(item => item.id !== itemId);
         setData(filteredState);
         dbRef.doc(itemId).delete();
 
     };
 
-    function addNewProduct(e) {
+    function addNewProduct(e: object | null) {
         console.log(e)
-        props.navigation.navigate('NewProductScreen', {product: e})
+        props.navigation.navigate('NewProductScreen', {product: e, data: data})
 
     }
 
-    function RenderRow(props) {
+    function RenderRow(props: { addNewProduct: (arg0: object) => void; item: data }) {
         console.log(props)
         return (
             <TouchableOpacity onPress={(e) => props.addNewProduct(props.item)}>
-                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', border: '1px solid black', borderRadius: 8, margin: 6, padding: 8, backgroundColor: '#f1f1f1'}}>
+                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', borderWidth: 1, borderColor: 'black', borderStyle: 'solid', borderRadius: 8, margin: 6, padding: 8, backgroundColor: '#f1f1f1'}}>
                     <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.name}</Text></View>
                     <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.price}</Text></View>
                     <View style={{ flex: 1, alignSelf: 'stretch', }} ><Text>{props.item.type}</Text></View>
@@ -94,7 +102,7 @@ export const HomeScreen: React.FC<
     return ( !data && columns ? null :
         <SafeAreaView style={styles.viewHomePage}>
 
-            <View style={{ flex: 1, alignSelf: 'stretch', maxHeight: 34, flexDirection: 'row', border: '1px solid black', borderRadius: 8, margin: 6, padding: 8, backgroundColor: colors[1]}}>
+            <View style={{ flex: 1, alignSelf: 'stretch', maxHeight: 34, flexDirection: 'row', borderWidth: 1, borderColor: 'black', borderStyle: 'solid',  borderRadius: 8, margin: 6, padding: 8, backgroundColor: colors[1]}}>
                 <View style={{ flex: 1, alignSelf: 'stretch', }} >
                     <TransText dictionary = {message.name}/>
                 </View>
@@ -112,7 +120,7 @@ export const HomeScreen: React.FC<
                     <RenderRow addNewProduct={addNewProduct} item={item} />
                 )}
                 maxSwipeDistance={240}
-                renderQuickActions={({index, item}) => QuickActions(index, item, deleteItem)}
+                renderQuickActions={(index: number, item: object) => QuickActions(index, item, deleteItem)}
                 shouldBounceOnMount={true}
             />
 
@@ -124,7 +132,7 @@ export const HomeScreen: React.FC<
                 style={styles.fab}
                 small
                 icon="plus"
-                onPress={() => addNewProduct()}
+                onPress={() => addNewProduct(null)}
             />
 
             <Pressable style={styles.buttonLoginForm} onPress={onPressFunction}>
@@ -136,12 +144,12 @@ export const HomeScreen: React.FC<
 );
 }
 
-const QuickActions = (index, qaItem, deleteItem) => {
+const QuickActions = (index: number, qaItem: any, deleteItem: { (itemId: number | string): void; (arg0: any): void; }) => {
     return (
         <View style={styles2.qaContainer}>
-            <View style={[styles2.button, styles2.button3]}>
+            <View style={[styles2.button, styles2.button]}>
                 <Pressable onPress={() => deleteItem(qaItem.id)}>
-                    <TransText style={[styles2.buttonText, styles2.button3Text]} dictionary = {message.delete}/>
+                    <TransText style={styles2.buttonText} dictionary = {message.delete}/>
                 </Pressable>
             </View>
         </View>
@@ -187,7 +195,6 @@ const styles2 = StyleSheet.create({
         padding: 10,
     },
     messageContainer: {
-        backgroundColor: darkColors.backgroundColor,
         maxWidth: 300,
     },
     name: {
@@ -255,6 +262,5 @@ const styles2 = StyleSheet.create({
     },
     contentContainerStyle: {
         flexGrow: 1,
-        backgroundColor: darkColors.backgroundColor,
     },
 });
