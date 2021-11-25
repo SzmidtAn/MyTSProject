@@ -1,10 +1,10 @@
 import {Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image} from "react-native";
-import React, {useContext, useEffect, useState} from "react";
+import React, {SetStateAction, useContext, useEffect, useState} from "react";
 import {LinearGradient} from "expo-linear-gradient";
 import {colors, styles} from "./loginScreen";
 import {AuthContext} from "../context/AuthContext";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import {StackScreens} from "../helpers/typeHelpers";
+import {item, StackScreens} from "../helpers/typeHelpers";
 import firebase from "../services/firebaseService";
 import SwipeableFlatList from 'react-native-swipeable-list';
 import { FAB } from 'react-native-paper';
@@ -41,17 +41,10 @@ const message =  {
 }
 
 
-interface data {
-    name: string,
-    type: string,
-    price: number,
-    id: number | string
-}
-
 export const HomeScreen: React.FC<
     NativeStackScreenProps<StackScreens, "HomeScreen">
     > = (props: React.PropsWithChildren<any>) => {
-    const [data, setData] = useState<data | any>();
+    const [data, setData] = useState<item[] >([]);
     const authContext = useContext(AuthContext);
     const dbRef = firebase.firestore().collection('products')
 
@@ -60,33 +53,30 @@ export const HomeScreen: React.FC<
     }
 
 
-    useEffect((() => {
+    useEffect(() => {
         dbRef.onSnapshot((snapshot) => {
-                let postData: any = [];
-                snapshot.forEach((doc) => postData.push({ ...doc.data(), id: doc.id }));
-                console.log(postData);
-                console.log('postData');
-                setData(postData)
+            const postData: item[] = [];
+            snapshot.forEach((doc) => postData?.push({name: "", price: 0, type: "", ...doc.data(), id: doc.id }));
+            setData(postData)
             });
 
 
-    }), [])
+    }, [])
 
-    const deleteItem = (itemId: string | any  ) => {
-        const newState = [...data];
-        const filteredState = newState?.filter(item => item.id !== itemId);
-        setData(filteredState);
+    const deleteItem = (itemId: string | undefined   ) => {
+        let newState:  item[]  = data;
+        newState = newState?.filter((item: item) => item.id !== itemId);
+        setData(newState);
         dbRef.doc(itemId).delete();
-
     };
 
-    function addNewProduct(e: object | null) {
+    function addNewProduct(e: item | null) {
         console.log(e)
         props.navigation.navigate('NewProductScreen', {product: e, data: data})
 
     }
 
-    function RenderRow(props: { addNewProduct: (arg0: object) => void; item: data }) {
+    function RenderRow(props: { addNewProduct: (arg0: item | null) => void; item: item }) {
         console.log(props)
         return (
             <TouchableOpacity onPress={(e) => props.addNewProduct(props.item)}>
@@ -116,11 +106,11 @@ export const HomeScreen: React.FC<
 
             <SwipeableFlatList
                 data={data}
-                renderItem={({item}) => (
-                    <RenderRow addNewProduct={addNewProduct} item={item} />
+                renderItem={(x: { item: item; }) => (
+                    <RenderRow addNewProduct={(item) => addNewProduct(item)} item={x?.item} />
                 )}
                 maxSwipeDistance={240}
-                renderQuickActions={(index: number, item: object) => QuickActions(index, item, deleteItem)}
+                renderQuickActions={(index: number, item: item) => QuickActions(index, item, deleteItem)}
                 shouldBounceOnMount={true}
             />
 
@@ -144,11 +134,11 @@ export const HomeScreen: React.FC<
 );
 }
 
-const QuickActions = (index: number, qaItem: any, deleteItem: { (itemId: number | string): void; (arg0: any): void; }) => {
+const QuickActions = (index: number, qaItem: item, deleteItem: { (itemId: string |undefined): void; (arg0: string): void; }) => {
     return (
         <View style={styles2.qaContainer}>
             <View style={[styles2.button, styles2.button]}>
-                <Pressable onPress={() => deleteItem(qaItem.id)}>
+                <Pressable onPress={() => deleteItem(qaItem?.id || '')}>
                     <TransText style={styles2.buttonText} dictionary = {message.delete}/>
                 </Pressable>
             </View>

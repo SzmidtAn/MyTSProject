@@ -7,47 +7,34 @@ import {LinearGradient} from "expo-linear-gradient";
 import { useForm, Controller } from "react-hook-form";
 import firebase from "../services/firebaseService";
 import {NativeStackScreenProps} from "@react-navigation/native-stack";
-import {StackScreens} from "../helpers/typeHelpers";
+import {item, StackScreens} from "../helpers/typeHelpers";
 import { Feather } from '@expo/vector-icons';
 import { Foundation } from '@expo/vector-icons';
 
-type Inputs = {
-    example: string,
-    exampleRequired: string,
-    name: string,
-    type: string,
-};
-
-
-interface item {
-    name: string,
-    type: string,
-    price: number,
-    id:  string
-}
 
 export const NewProductScreen: React.FC<
     NativeStackScreenProps<StackScreens, "HomeScreen">
     > = (props) => {
-    const [item, setItem] = useState<item | null>()
+    const [item, setItem] = useState<item | null>(null)
     const dbRef = firebase.firestore().collection('products');
     const { control, handleSubmit, reset, getValues, watch,  formState: {errors, isValid} } = useForm({
         defaultValues: {
             name:'',
-            price: '',
-            type: 'Peripheral'
+            price: 0,
+            type: 'Peripheral',
+            id: ''
         },
         mode: "onChange"
 
     });
 
 
-    const onSubmit = (data: any) => {
-        const product: item | null | any = props?.route?.params?.data
+    const onSubmit = (data: item) => {
+        const params: object[] | undefined  = props?.route?.params
+        const product: item[] | null = params?.data
 
         console.log(product)
-        console.log(product)
-        if(product.find((e: { name: string; }) => e.name === data.name)){
+        if(product?.find((e: { name: string; }) => e.name === data.name)){
             return
         }
 
@@ -55,17 +42,17 @@ export const NewProductScreen: React.FC<
             return
         }
 
-        if(item){
-            updateItem(item.id, data)
+        if(data?.id){
+            updateItem(data?.id, data)
             return
         }
-
         addItem(data)
     };
 
-
     useEffect(() => {
-        const product: item | null | any = props?.route?.params?.product
+        const params: object[] | undefined  = props?.route?.params
+        const product: item | null  = params?.product
+
         if(product){
             setItem(product)
             reset(product);
@@ -73,8 +60,7 @@ export const NewProductScreen: React.FC<
 
     }, [])
 
-
-    function updateItem(id: string , data: object){
+    function updateItem(id: string | undefined , data: item){
         dbRef.doc(id).update(data)
             .then((res) => {
                 props.navigation.navigate('HomeScreen')
@@ -101,7 +87,7 @@ export const NewProductScreen: React.FC<
         props.navigation.goBack()
     }
 
-    const allowOnlyNumber=(value)=>{
+    const allowOnlyNumber=(value: string)=>{
         if(!value){
             return
         }
@@ -143,6 +129,7 @@ export const NewProductScreen: React.FC<
                             onBlur={onBlur}
                             onChangeText={(text)=>onChange(allowOnlyNumber(text))}
                             value={value}
+                            type='numeric'
                             keyboardType='numeric'
                         />
                     )}

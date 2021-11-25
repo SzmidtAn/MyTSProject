@@ -5,3 +5,10 @@ export type StackScreens = {
     HomeScreen: undefined;
     NewProductScreen: undefined;
 };
+
+export type item = {
+    name: string ,
+    type: string ,
+    price: number ,
+    id:  string | null
+}
